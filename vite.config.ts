@@ -18,12 +18,16 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-    },
+      "zlib-sync": "pako"
+    }
   },
   define: {
     'process.env': {
       DISCORD_TOKEN: process.env.DISCORD_TOKEN,
       NODE_ENV: process.env.NODE_ENV
     }
+  },
+  optimizeDeps: {
+    exclude: ['zlib-sync']
   }
 }));

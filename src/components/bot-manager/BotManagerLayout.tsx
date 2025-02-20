@@ -7,11 +7,14 @@ import { BotManager } from "@/lib/BotManager";
 import { Client, GatewayIntentBits } from "discord.js";
 import { toast } from "sonner";
 
-// Set up global object if it doesn't exist
+// Set up global object and process polyfills if they don't exist
 if (typeof window !== 'undefined') {
   (window as any).global = window;
   (window as any).process = {
-    env: { DISCORD_TOKEN: process.env.DISCORD_TOKEN }
+    env: { DISCORD_TOKEN: process.env.DISCORD_TOKEN },
+    versions: { node: '16.0.0' },
+    platform: 'browser',
+    arch: 'browser'
   };
 }
 

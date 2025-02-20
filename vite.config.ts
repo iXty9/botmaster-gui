@@ -27,8 +27,13 @@ export default defineConfig(({ mode }) => ({
       DISCORD_TOKEN: process.env.DISCORD_TOKEN,
       NODE_ENV: process.env.NODE_ENV
     },
+    'process.versions': {
+      node: '16.0.0'
+    },
+    'process.platform': 'browser',
+    'process.arch': 'browser',
     'global': 'globalThis',
-    'module': {}, // Add module polyfill
+    'module': {},
   },
   optimizeDeps: {
     esbuildOptions: {
@@ -36,7 +41,7 @@ export default defineConfig(({ mode }) => ({
         global: 'globalThis'
       }
     },
-    exclude: ['zlib-sync'] // Exclude problematic native module
+    exclude: ['zlib-sync']
   },
   build: {
     commonjsOptions: {

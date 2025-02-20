@@ -46,10 +46,12 @@ export class BotManager {
 
     // Set up client event handlers
     this.client.on('ready', () => {
+      console.log("Bot Manager: Client is ready");
       this.log('Bot is ready');
     });
 
     this.client.on('error', (error) => {
+      console.error("Bot Manager: Client error", error);
       this.log(`Error: ${error.message}`);
     });
   }

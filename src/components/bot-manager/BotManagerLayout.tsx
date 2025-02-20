@@ -8,8 +8,11 @@ import { Client, GatewayIntentBits } from "discord.js";
 import { toast } from "sonner";
 
 // Set up global object if it doesn't exist
-if (typeof global === 'undefined') {
+if (typeof window !== 'undefined') {
   (window as any).global = window;
+  (window as any).process = {
+    env: { DISCORD_TOKEN: process.env.DISCORD_TOKEN }
+  };
 }
 
 export function BotManagerLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +22,7 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const initializeBot = async () => {
       try {
+        console.log("Initializing bot...");
         const client = new Client({
           intents: [
             GatewayIntentBits.Guilds,
@@ -29,6 +33,21 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
             version: '10'
           }
         });
+
+        // Add event listeners
+        client.on('ready', () => {
+          console.log('Bot is ready!');
+          toast.success(`Logged in as ${client.user?.tag}`);
+        });
+
+        client.on('error', (error) => {
+          console.error('Discord client error:', error);
+          toast.error(`Discord error: ${error.message}`);
+        });
+
+        // Login with token
+        await client.login(process.env.DISCORD_TOKEN);
+        console.log("Login attempt completed");
 
         // Initialize bot manager
         const manager = new BotManager(client);
@@ -42,15 +61,25 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
           avatar: client.user?.avatarURL() || "/placeholder.svg",
         });
 
-        toast.success("Bot manager initialized successfully");
       } catch (error) {
         console.error("Failed to initialize bot:", error);
-        toast.error("Failed to initialize bot manager");
+        toast.error("Failed to initialize bot manager: " + (error as Error).message);
       }
     };
 
     initializeBot();
   }, []);
+
+  if (!selectedBot) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-discord-background text-white">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Initializing Bot Manager...</h2>
+          <p className="text-gray-400">Please wait while we connect to Discord</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>

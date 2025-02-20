@@ -18,7 +18,8 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
-      "zlib": "pako", // Use pako instead of zlib
+      "zlib": "pako", // Use pako as a browser-compatible replacement for zlib
+      "zlib-sync": "pako" // Redirect zlib-sync to pako as well
     },
   },
   define: {
@@ -26,13 +27,20 @@ export default defineConfig(({ mode }) => ({
       DISCORD_TOKEN: process.env.DISCORD_TOKEN,
       NODE_ENV: process.env.NODE_ENV
     },
-    'global': {},
+    'global': 'globalThis',
+    'module': {}, // Add module polyfill
   },
   optimizeDeps: {
-    exclude: ['zlib-sync'] // Exclude the native module
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
+    },
+    exclude: ['zlib-sync'] // Exclude problematic native module
   },
   build: {
     commonjsOptions: {
+      transformMixedEsModules: true,
       include: [/node_modules/],
       exclude: [/node_modules\/zlib-sync/]
     }

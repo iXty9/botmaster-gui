@@ -18,6 +18,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "zlib": "pako", // Use pako instead of zlib
     },
   },
   define: {
@@ -26,5 +27,14 @@ export default defineConfig(({ mode }) => ({
       NODE_ENV: process.env.NODE_ENV
     },
     'global': {},
+  },
+  optimizeDeps: {
+    exclude: ['zlib-sync'] // Exclude the native module
+  },
+  build: {
+    commonjsOptions: {
+      include: [/node_modules/],
+      exclude: [/node_modules\/zlib-sync/]
+    }
   }
 }));

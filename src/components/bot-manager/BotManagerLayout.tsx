@@ -16,8 +16,18 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
     const initializeBot = async () => {
       console.log("Starting bot initialization...");
       
+      // Token validation
       if (!process.env.DISCORD_TOKEN) {
-        const error = "Discord token not found in environment variables";
+        const error = "Discord token not found. Please ensure your .env file contains DISCORD_TOKEN=your_token";
+        console.error(error);
+        setInitError(error);
+        toast.error(error);
+        return;
+      }
+
+      // Basic token format validation
+      if (!process.env.DISCORD_TOKEN.match(/[\w-]{24}\.[\w-]{6}\.[\w-]{27}/)) {
+        const error = "Invalid Discord token format. Please check your token in .env";
         console.error(error);
         setInitError(error);
         toast.error(error);
@@ -63,8 +73,16 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
         });
 
         console.log("Attempting to login with Discord token...");
-        await client.login(process.env.DISCORD_TOKEN);
-        console.log("Login attempt completed");
+        try {
+          await client.login(process.env.DISCORD_TOKEN);
+          console.log("Login successful!");
+        } catch (loginError) {
+          const errorMsg = `Failed to login: ${(loginError as Error).message}. Please check your Discord token.`;
+          console.error(errorMsg);
+          setInitError(errorMsg);
+          toast.error(errorMsg);
+          return;
+        }
 
         // Initialize bot manager
         console.log("Initializing bot manager...");

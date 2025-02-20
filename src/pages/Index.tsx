@@ -2,8 +2,18 @@
 import { BotManagerLayout } from "@/components/bot-manager/BotManagerLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Activity, Command, MessageSquare, Users } from "lucide-react";
+import { useEffect, useState } from "react";
+import { BotStats } from "@/lib/BotManager";
 
 export default function Index() {
+  const [stats, setStats] = useState<BotStats>({
+    messagesReceived: 0,
+    messagesSent: 0,
+    commandsExecuted: 0,
+    startTime: Date.now(),
+    lastActivity: Date.now()
+  });
+
   return (
     <BotManagerLayout>
       <div className="animate-fade-in">
@@ -12,27 +22,27 @@ export default function Index() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatCard
             title="Total Commands"
-            value="24"
+            value={stats.commandsExecuted.toString()}
             icon={Command}
             trend="+3 this week"
           />
           <StatCard
-            title="Active Servers"
-            value="12"
+            title="Messages Received"
+            value={stats.messagesReceived.toString()}
             icon={Users}
             trend="+2 this week"
           />
           <StatCard
-            title="Messages Handled"
-            value="1,234"
+            title="Messages Sent"
+            value={stats.messagesSent.toString()}
             icon={MessageSquare}
             trend="+123 today"
           />
           <StatCard
-            title="Command Usage"
-            value="89%"
+            title="Uptime"
+            value={`${Math.floor((Date.now() - stats.startTime) / 1000 / 60)} min`}
             icon={Activity}
-            trend="+5% this week"
+            trend="Active"
           />
         </div>
 

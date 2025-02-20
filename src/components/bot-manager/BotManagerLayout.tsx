@@ -7,6 +7,11 @@ import { BotManager } from "@/lib/BotManager";
 import { Client, GatewayIntentBits } from "discord.js";
 import { toast } from "sonner";
 
+// Set up global object if it doesn't exist
+if (typeof global === 'undefined') {
+  (window as any).global = window;
+}
+
 export function BotManagerLayout({ children }: { children: React.ReactNode }) {
   const [selectedBot, setSelectedBot] = useState<Bot | null>(null);
   const [botManager, setBotManager] = useState<BotManager | null>(null);

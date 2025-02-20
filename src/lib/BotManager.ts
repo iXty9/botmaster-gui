@@ -25,7 +25,7 @@ export interface ChannelInfo {
 }
 
 export class BotManager {
-  private client: Client;
+  public readonly client: Client;
   private stats: BotStats;
   private logs: Array<{ log: string; timestamp: number }>;
   private maxLogs: number;

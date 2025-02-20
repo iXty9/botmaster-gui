@@ -1,5 +1,5 @@
 
-import { Client, ClientOptions, GatewayIntentBits } from "discord.js";
+import { Client, ClientOptions, GatewayIntentBits, ChannelType, TextChannel, ForumChannel } from "discord.js";
 import { Bot } from "@/types/bot";
 
 export interface BotStats {
@@ -85,7 +85,9 @@ export class BotManager {
       const guildChannels = await guild.channels.fetch();
       
       for (const channel of guildChannels.values()) {
-        if (channel?.type === ChannelType.GuildText || channel?.type === ChannelType.GuildForum) {
+        if (!channel) continue;
+
+        if (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildForum) {
           const channelInfo: ChannelInfo = {
             id: channel.id,
             name: channel.name,
@@ -94,7 +96,7 @@ export class BotManager {
             type: channel.type === ChannelType.GuildForum ? 'forum' : 'text'
           };
 
-          if (channel.type === ChannelType.GuildForum) {
+          if (channel.type === ChannelType.GuildForum && channel instanceof ForumChannel) {
             const threads = await channel.threads.fetch();
             channelInfo.threads = threads.threads.map(thread => ({
               id: thread.id,

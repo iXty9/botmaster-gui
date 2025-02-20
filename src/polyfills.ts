@@ -12,3 +12,17 @@
   },
   platform: 'browser'
 };
+
+// Mock util.debuglog since it's not needed in browser environment
+(window as any).util = {
+  debuglog: () => () => {},
+  types: {
+    isDate: (obj: any) => obj instanceof Date,
+    isRegExp: (obj: any) => obj instanceof RegExp
+  }
+};
+
+// Polyfill other Node.js built-ins that discord.js might need
+(window as any).Buffer = {
+  isBuffer: () => false
+};

@@ -1,5 +1,5 @@
 
-import { Client, ChannelType } from "discord.js";
+import { Client, ClientOptions, GatewayIntentBits } from "discord.js";
 import { Bot } from "@/types/bot";
 
 export interface BotStats {
@@ -43,6 +43,15 @@ export class BotManager {
       startTime: Date.now(),
       lastActivity: Date.now()
     };
+
+    // Set up client event handlers
+    this.client.on('ready', () => {
+      this.log('Bot is ready');
+    });
+
+    this.client.on('error', (error) => {
+      this.log(`Error: ${error.message}`);
+    });
   }
 
   public getUsageStats(): BotStats {
@@ -76,7 +85,7 @@ export class BotManager {
       const guildChannels = await guild.channels.fetch();
       
       for (const channel of guildChannels.values()) {
-        if (channel.type === ChannelType.GuildText || channel.type === ChannelType.GuildForum) {
+        if (channel?.type === ChannelType.GuildText || channel?.type === ChannelType.GuildForum) {
           const channelInfo: ChannelInfo = {
             id: channel.id,
             name: channel.name,

@@ -19,7 +19,10 @@ export function BotManagerLayout({ children }: { children: React.ReactNode }) {
             GatewayIntentBits.Guilds,
             GatewayIntentBits.GuildMessages,
             GatewayIntentBits.MessageContent
-          ]
+          ],
+          rest: {
+            version: '10'
+          }
         });
 
         // Initialize bot manager
